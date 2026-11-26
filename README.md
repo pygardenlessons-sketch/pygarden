@@ -32,7 +32,17 @@ Cloudflare Workers Builds запускає `npx wrangler deploy` і публік
 git push → GitHub → Cloudflare Workers Builds → pygarden.com
 ```
 
-## Запуск бекенду локально
+## Запуск бекенду через Docker
+
+Потрібен [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+```bash
+docker compose up --build
+```
+
+API буде доступне на http://127.0.0.1:8000. Зупинити — `Ctrl+C`.
+
+## Запуск бекенду без Docker
 
 ```bash
 cd backend
