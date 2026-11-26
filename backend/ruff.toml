@@ -1,0 +1,13 @@
+# Налаштування лінтера ruff: https://docs.astral.sh/ruff/
+target-version = "py313"  # та сама версія, що й у Dockerfile
+line-length = 100
+
+[lint]
+select = [
+    "E",   # помилки стилю (pycodestyle)
+    "W",   # попередження стилю (pycodestyle)
+    "F",   # реальні помилки: невикористані імпорти, невідомі імена (pyflakes)
+    "I",   # порядок імпортів (isort)
+    "B",   # типові пастки й баги (flake8-bugbear)
+    "UP",  # сучасний синтаксис Python (pyupgrade)
+]

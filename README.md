@@ -71,7 +71,16 @@ pip install -r requirements-dev.txt
 pytest -v
 ```
 
-Ті самі тести автоматично запускає GitHub Actions при кожному `push` і на
+Стиль коду перевіряє лінтер [ruff](https://docs.astral.sh/ruff/)
+(налаштування — `backend/ruff.toml`):
+
+```bash
+ruff check .          # знайти проблеми
+ruff check --fix .    # виправити те, що можна автоматично
+ruff format .         # відформатувати код
+```
+
+Тести й ruff автоматично запускає GitHub Actions при кожному `push` і на
 кожен pull request (`.github/workflows/tests.yml`). Результат видно на вкладці
 **Actions** у репозиторії та зеленою ✓ / червоним ✗ біля коміту.
 

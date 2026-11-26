@@ -26,5 +26,11 @@ jobs:
       - name: Встановити залежності
         run: pip install -r requirements-dev.txt
 
+      - name: Перевірити код лінтером (ruff)
+        run: ruff check --output-format=github .
+
+      - name: Перевірити форматування (ruff)
+        run: ruff format --check .
+
       - name: Запустити тести
         run: pytest -v
