@@ -119,22 +119,51 @@ body {
     #86bd62;
 }
 
-/* Доріжка від низу карти до майданчика в центрі */
-.garden-map::before {
+.garden-map::before,
+.garden-map::after {
   content: "";
   position: absolute;
+}
+
+/* Зона «Хвіртка»: доріжка через усю карту до паркану з хвірткою вгорі */
+.garden-map--gate::before {
   left: 50%;
-  top: 52%;
+  top: 0;
   bottom: 0;
-  width: 14%;
+  width: 16%;
   transform: translateX(-50%);
   background: #e3cf9f;
 }
 
-/* Круглий майданчик у центрі */
-.garden-map::after {
-  content: "";
-  position: absolute;
+.garden-map--gate::after {
+  left: 0;
+  right: 0;
+  top: 13%;
+  height: 7%;
+  background: repeating-linear-gradient(90deg, #9a6b3f 0 2.5%, transparent 2.5% 5%);
+  border-top: 4px solid #8a5d34;
+}
+
+/* Зона «Клумби»: поперечна доріжка й круглий майданчик у центрі */
+.garden-map--flowerbeds {
+  background:
+    radial-gradient(circle at 12% 85%, #e8a0b8 0 2%, transparent 2.5%),
+    radial-gradient(circle at 90% 12%, #f2d16b 0 2%, transparent 2.5%),
+    radial-gradient(circle at 15% 20%, #8fc46a 0 12%, transparent 13%),
+    radial-gradient(circle at 85% 80%, #8fc46a 0 14%, transparent 15%),
+    #86bd62;
+}
+
+.garden-map--flowerbeds::before {
+  left: 0;
+  right: 0;
+  top: 52%;
+  height: 12%;
+  transform: translateY(-50%);
+  background: #e3cf9f;
+}
+
+.garden-map--flowerbeds::after {
   left: 50%;
   top: 52%;
   width: 34%;
@@ -142,6 +171,38 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: #e3cf9f;
+}
+
+/* ---------- Перемикач зон ---------- */
+
+.zone-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.zone-tab {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--green);
+  background: white;
+  color: var(--green-dark);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.zone-tab[aria-current="page"] {
+  background: var(--green);
+  color: white;
+}
+
+.zone-tab--locked {
+  border-style: dashed;
+  border-color: #b9c2bc;
+  color: var(--muted);
+  cursor: not-allowed;
 }
 
 .spot {
@@ -287,10 +348,210 @@ body {
   margin: 0 0 20px;
 }
 
+/* ---------- Список розділів ---------- */
+
+.page-title {
+  margin: 0 0 16px;
+  font-size: 1.6rem;
+  color: var(--green-dark);
+}
+
+.chapter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chapter-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.chapter-emoji {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.chapter-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.chapter-info h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--green-dark);
+}
+
+.chapter-info p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.chapter-item--locked,
+.chapter-item--upcoming {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: none;
+}
+
+.chapter-item--locked h2,
+.chapter-item--upcoming h2 {
+  color: var(--muted);
+}
+
+.chapter-item--upcoming .chapter-emoji {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.progress-bar {
+  margin-top: 8px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--green-light);
+  overflow: hidden;
+}
+
+.progress-bar > div {
+  height: 100%;
+  background: #f2b632;
+  border-radius: inherit;
+  transition: width 0.3s;
+}
+
+@media (max-width: 480px) {
+  .chapter-item {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .chapter-item .button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ---------- Розділ ---------- */
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.chapter-title {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+.chapter-done {
+  margin-top: 16px;
+  padding: 20px 24px;
+  border-radius: var(--radius);
+  background: #fff6d8;
+  border: 2px solid #f2b632;
+}
+
+.chapter-done h2 {
+  margin: 0 0 4px;
+  color: var(--green-dark);
+}
+
+.chapter-done p {
+  margin: 0 0 16px;
+}
+
+/* ---------- Порада садівника ---------- */
+
+.tip-card {
+  border-top: 4px solid #f2b632;
+}
+
+.tip-kicker {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #a77a0c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tip-output {
+  margin: -4px 0 16px;
+}
+
+.tip-output .label {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.tip-output pre {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--green-light);
+  font-family: var(--mono);
+  white-space: pre-wrap;
+}
+
+/* ---------- Передбач вивід ---------- */
+
+.prediction-label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--green-dark);
+}
+
+.prediction {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  font: 1rem/1.6 var(--mono);
+  color: var(--text);
+  background: #fffdf5;
+  border: 2px solid #e3cf9f;
+  border-radius: 8px;
+  resize: none; /* висоту задає кількість рядків (до 8), далі — прокрутка */
+  overflow-y: auto;
+}
+
+.prediction:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.prediction:disabled {
+  color: var(--green-dark);
+  -webkit-text-fill-color: var(--green-dark);
+  opacity: 1;
+  background: var(--green-light);
+  border-color: var(--green);
+}
+
 /* ---------- Квест ---------- */
 
 .quest-nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -304,6 +565,11 @@ body {
   color: var(--green-dark);
   font-weight: 700;
   cursor: pointer;
+}
+
+.quest-dot--tip {
+  border-color: #f2b632;
+  background: #fff6d8;
 }
 
 .quest-dot[aria-current="step"] {
@@ -466,4 +732,9 @@ body {
 .result .hint {
   color: var(--muted);
   font-style: italic;
+}
+
+.result .hint-more {
+  font-size: 0.85rem;
+  opacity: 0.8;
 }

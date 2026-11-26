@@ -2,17 +2,19 @@
 // він сам затемнює фон, тримає фокус усередині й закривається клавішею Esc.
 
 import { useEffect, useRef } from "react";
-import type { GardenSpot } from "../data/garden.ts";
+import type { GardenSpot } from "../data/types.ts";
 
 type Props = {
   /** Обрана ділянка; null — діалог закритий. */
   spot: GardenSpot | null;
   balance: number;
+  /** Куди вести, якщо зірочок не вистачає. */
+  questsHref: string;
   onUnlock: (spot: GardenSpot) => void;
   onClose: () => void;
 };
 
-export function UnlockDialog({ spot, balance, onUnlock, onClose }: Props) {
+export function UnlockDialog({ spot, balance, questsHref, onUnlock, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export function UnlockDialog({ spot, balance, onUnlock, onClose }: Props) {
                 Відновити
               </button>
             ) : (
-              <a href="#quests" className="button" onClick={onClose}>
+              <a href={questsHref} className="button" onClick={onClose}>
                 До квестів →
               </a>
             )}

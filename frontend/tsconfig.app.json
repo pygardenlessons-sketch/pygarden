@@ -23,5 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Тести перевіряються окремо (tsconfig.test.json): їм потрібні типи Node.js
+  "exclude": ["src/**/*.test.ts"]
 }

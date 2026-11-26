@@ -5,7 +5,7 @@
 // перемальовуються, коли він змінюється.
 
 import { useSyncExternalStore } from "react";
-import { GARDEN_SPOTS } from "../data/garden.ts";
+import { ALL_SPOTS } from "../data/course.ts";
 
 export type Progress = {
   /** id пройдених квестів */
@@ -16,7 +16,8 @@ export type Progress = {
   unlocked: string[];
 };
 
-const STORAGE_KEY = "pygarden.progress";
+// v2: курс перебудовано на розділи, тож прогрес прототипу (v1) не переносимо
+const STORAGE_KEY = "pygarden.progress.v2";
 const EMPTY: Progress = { completed: [], answers: {}, unlocked: [] };
 
 function load(): Progress {
@@ -54,7 +55,7 @@ export function useProgress(): Progress {
 
 /** Скільки зірочок можна витратити: зароблені мінус витрачені на сад. */
 export function starBalance(progress: Progress): number {
-  const spent = GARDEN_SPOTS.filter((spot) => progress.unlocked.includes(spot.id)).reduce(
+  const spent = ALL_SPOTS.filter((spot) => progress.unlocked.includes(spot.id)).reduce(
     (sum, spot) => sum + spot.cost,
     0,
   );
@@ -73,7 +74,7 @@ export function completeQuest(questId: string, answer: string) {
 
 /** Відновити ділянку саду. Повертає false, якщо зірочок не вистачає. */
 export function unlockSpot(spotId: string): boolean {
-  const spot = GARDEN_SPOTS.find((s) => s.id === spotId);
+  const spot = ALL_SPOTS.find((s) => s.id === spotId);
   if (!spot || state.unlocked.includes(spotId) || starBalance(state) < spot.cost) return false;
   update({ ...state, unlocked: [...state.unlocked, spotId] });
   return true;

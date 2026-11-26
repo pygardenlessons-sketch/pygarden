@@ -1,15 +1,38 @@
-// Екран саду: зарослі ділянки, які гравець відновлює за зірочки.
+// Екран саду: кожен розділ курсу має свою зону з зарослими ділянками,
+// які гравець відновлює за зірочки.
 
-import { useState } from "react";
-import { GARDEN_SPOTS, type GardenSpot } from "../data/garden.ts";
-import { starBalance, unlockSpot, useProgress } from "../game/progress.ts";
+import { useEffect, useState } from "react";
+import { CHAPTERS, currentChapter, findChapter, isChapterOpen } from "../data/course.ts";
+import type { Chapter, GardenSpot } from "../data/types.ts";
+import { starBalance, unlockSpot, useProgress, type Progress } from "../game/progress.ts";
 import { UnlockDialog } from "./UnlockDialog.tsx";
 
-export function GardenView({ hidden }: { hidden: boolean }) {
+export function GardenView({ zoneId }: { zoneId?: string }) {
   const progress = useProgress();
   const balance = starBalance(progress);
   const [selected, setSelected] = useState<GardenSpot | null>(null);
   const [justUnlocked, setJustUnlocked] = useState<string | null>(null);
+
+  // Закрита або невідома зона — показуємо першу відкриту зону, яку ще не відновлено
+  // (або зону поточного розділу, якщо все відновлено)
+  const requested = findChapter(zoneId);
+  const chapter =
+    requested && isChapterOpen(requested, progress.completed)
+      ? requested
+      : (CHAPTERS.find(
+          (c) =>
+            isChapterOpen(c, progress.completed) &&
+            c.zone.spots.some((spot) => !progress.unlocked.includes(spot.id)),
+        ) ?? currentChapter(progress.completed));
+  const { zone } = chapter;
+
+  // Фіксуємо обрану зону в адресі (#garden → #garden/print), щоб сад не перескакував
+  // на іншу зону, щойно гравець відновить останню ділянку поточної
+  useEffect(() => {
+    if (zoneId === chapter.id) return;
+    history.replaceState(null, "", `#garden/${chapter.id}`);
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+  }, [zoneId, chapter.id]);
 
   function handleUnlock(spot: GardenSpot) {
     if (unlockSpot(spot.id)) setJustUnlocked(spot.id);
@@ -17,9 +40,32 @@ export function GardenView({ hidden }: { hidden: boolean }) {
   }
 
   return (
-    <main className="page" hidden={hidden}>
-      <div className="garden-map" aria-label="Карта саду">
-        {GARDEN_SPOTS.map((spot) => (
+    <main className="page">
+      <nav className="zone-tabs" aria-label="Зони саду">
+        {CHAPTERS.map((c, i) =>
+          isChapterOpen(c, progress.completed) ? (
+            <a
+              key={c.id}
+              href={`#garden/${c.id}`}
+              className="zone-tab"
+              aria-current={c === chapter ? "page" : undefined}
+            >
+              {c.zone.emoji} {c.zone.name}
+            </a>
+          ) : (
+            <span
+              key={c.id}
+              className="zone-tab zone-tab--locked"
+              title={`Пройди розділ ${i}, щоб відкрити`}
+            >
+              🔒 {c.zone.name}
+            </span>
+          ),
+        )}
+      </nav>
+
+      <div className={`garden-map garden-map--${zone.layout}`} aria-label={`Зона «${zone.name}»`}>
+        {zone.spots.map((spot) => (
           <Spot
             key={spot.id}
             spot={spot}
@@ -31,11 +77,12 @@ export function GardenView({ hidden }: { hidden: boolean }) {
         ))}
       </div>
 
-      <GardenHint balance={balance} unlockedCount={progress.unlocked.length} />
+      <ZoneHint chapter={chapter} progress={progress} balance={balance} />
 
       <UnlockDialog
         spot={selected}
         balance={balance}
+        questsHref={`#quests/${chapter.id}`}
         onUnlock={handleUnlock}
         onClose={() => setSelected(null)}
       />
@@ -77,29 +124,52 @@ function Spot({ spot, unlocked, affordable, justUnlocked, onSelect }: SpotProps)
   );
 }
 
-function GardenHint({ balance, unlockedCount }: { balance: number; unlockedCount: number }) {
-  const allOpen = unlockedCount === GARDEN_SPOTS.length;
+function ZoneHint({
+  chapter,
+  progress,
+  balance,
+}: {
+  chapter: Chapter;
+  progress: Progress;
+  balance: number;
+}) {
+  const { zone } = chapter;
+  const index = CHAPTERS.indexOf(chapter);
+  const nextChapter = CHAPTERS[index + 1];
+  const zoneDone = zone.spots.every((spot) => progress.unlocked.includes(spot.id));
+  const anyUnlocked = zone.spots.some((spot) => progress.unlocked.includes(spot.id));
 
   let text: string;
-  let showQuestsLink = false;
-  if (allOpen) {
-    text = "Сад відновлено! 🎉 Нові квести й ділянки — незабаром.";
+  let link: { href: string; label: string } | null = null;
+
+  if (zoneDone) {
+    if (!nextChapter) {
+      text = `Зону «${zone.name}» відновлено! 🎉 Нові зони — незабаром.`;
+    } else if (isChapterOpen(nextChapter, progress.completed)) {
+      text = `Зону «${zone.name}» відновлено! 🎉 На тебе чекає наступна зона.`;
+      link = {
+        href: `#garden/${nextChapter.id}`,
+        label: `${nextChapter.zone.emoji} ${nextChapter.zone.name} →`,
+      };
+    } else {
+      text = `Зону «${zone.name}» відновлено! 🎉 Пройди розділ ${index + 1} до кінця, щоб відкрити зону «${nextChapter.zone.name}».`;
+      link = { href: `#quests/${chapter.id}`, label: "До квестів →" };
+    }
   } else if (balance > 0) {
     text = `У тебе ⭐${balance}. Торкнись зарослої ділянки, щоб відновити її.`;
   } else {
-    showQuestsLink = true;
-    text =
-      unlockedCount === 0
-        ? "Сад давно заріс. Проходь квести, отримуй ⭐ і відновлюй його ділянку за ділянкою."
-        : "Зірочки закінчились. Пройди ще квест, щоб відновлювати сад далі.";
+    text = anyUnlocked
+      ? "Зірочки закінчились. Пройди ще квест, щоб відновлювати зону далі."
+      : `Зона «${zone.name}» давно заросла. Проходь квести розділу «${chapter.title}», отримуй ⭐ і відновлюй її.`;
+    link = { href: `#quests/${chapter.id}`, label: "До квестів →" };
   }
 
   return (
     <div className="garden-hint" role="status" aria-live="polite">
       <p>{text}</p>
-      {showQuestsLink && (
-        <a href="#quests" className="button">
-          До квестів →
+      {link && (
+        <a href={link.href} className="button">
+          {link.label}
         </a>
       )}
     </div>

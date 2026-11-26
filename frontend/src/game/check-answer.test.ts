@@ -1,15 +1,26 @@
 import { describe, expect, it } from "vitest";
-import type { Quest } from "../data/quests.ts";
-import { buildCode, cleanAnswer, fixSmartQuotes, judge, normalizeOutput } from "./check-answer.ts";
+import type { FillBlankQuest } from "../data/types.ts";
+import {
+  buildCode,
+  cleanAnswer,
+  fixSmartQuotes,
+  judgeFillBlank,
+  judgePrediction,
+  normalizeOutput,
+} from "./check-answer.ts";
 
-const quest: Quest = {
+const quest: FillBlankQuest = {
+  kind: "fill-blank",
   id: "test",
   title: "Тест",
   task: "",
   code: "print(___)",
+  solution: '"Привіт"',
   expected: "Привіт",
-  hint: "",
+  hints: ["", ""],
 };
+
+const ok = (output: string) => ({ ok: true as const, output });
 
 describe("fixSmartQuotes", () => {
   it("замінює «розумні» лапки iPhone на звичайні", () => {
@@ -35,16 +46,13 @@ describe("normalizeOutput", () => {
   });
 });
 
-describe("judge", () => {
+describe("judgeFillBlank", () => {
   it("правильний вивід — успіх", () => {
-    expect(judge(quest, { ok: true, output: "Привіт\n" })).toEqual({
-      kind: "success",
-      output: "Привіт",
-    });
+    expect(judgeFillBlank(quest, ok("Привіт\n"))).toEqual({ kind: "success", output: "Привіт" });
   });
 
   it("інший вивід — показує, що очікували і що вийшло", () => {
-    expect(judge(quest, { ok: true, output: "Бувай\n" })).toEqual({
+    expect(judgeFillBlank(quest, ok("Бувай\n"))).toEqual({
       kind: "wrong-output",
       expected: "Привіт",
       got: "Бувай",
@@ -52,7 +60,7 @@ describe("judge", () => {
   });
 
   it("помилка Python — пояснення українською", () => {
-    const verdict = judge(quest, {
+    const verdict = judgeFillBlank(quest, {
       ok: false,
       output: "",
       errorType: "NameError",
@@ -64,5 +72,36 @@ describe("judge", () => {
       expect(verdict.explanation).toContain('візьми його в лапки: "Привіт"');
       expect(verdict.line).toBe(1);
     }
+  });
+});
+
+describe("judgePrediction", () => {
+  const twoLines = ok("Сад\nпрокидається\n");
+
+  it("правильне передбачення — успіх", () => {
+    expect(judgePrediction("Сад\nпрокидається", twoLines).kind).toBe("success");
+  });
+
+  it("пробіли в кінці рядків не мають значення", () => {
+    expect(judgePrediction("Сад  \nпрокидається\n\n", twoLines).kind).toBe("success");
+  });
+
+  it("помічає зайві лапки", () => {
+    const verdict = judgePrediction('"Сад"\n"прокидається"', twoLines);
+    expect(verdict).toMatchObject({ kind: "wrong-prediction" });
+    if (verdict.kind === "wrong-prediction") expect(verdict.message).toContain("лапки");
+  });
+
+  it("підказує, скільки рядків має бути", () => {
+    const verdict = judgePrediction("Сад прокидається", twoLines);
+    if (verdict.kind !== "wrong-prediction") throw new Error("очікували wrong-prediction");
+    expect(verdict.message).toBe("Python виведе 2 рядки, а в тебе 1 рядок.");
+  });
+
+  it("підказує, який рядок не збігається, але не показує правильну відповідь", () => {
+    const verdict = judgePrediction("Сад\nспить", twoLines);
+    if (verdict.kind !== "wrong-prediction") throw new Error("очікували wrong-prediction");
+    expect(verdict.message).toContain("рядок 2");
+    expect(verdict.message).not.toContain("прокидається");
   });
 });

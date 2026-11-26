@@ -1,12 +1,12 @@
-import type { Route } from "../App.tsx";
+import type { View } from "../App.tsx";
 import { starBalance, useProgress } from "../game/progress.ts";
 
-const TABS: { route: Route; label: string }[] = [
-  { route: "garden", label: "🌳 Сад" },
-  { route: "quests", label: "📜 Квести" },
+const TABS: { view: View; label: string }[] = [
+  { view: "garden", label: "🌳 Сад" },
+  { view: "quests", label: "📜 Квести" },
 ];
 
-export function TopBar({ route }: { route: Route }) {
+export function TopBar({ view }: { view: View }) {
   const progress = useProgress();
 
   return (
@@ -17,10 +17,10 @@ export function TopBar({ route }: { route: Route }) {
       <nav className="tabs" aria-label="Розділи">
         {TABS.map((tab) => (
           <a
-            key={tab.route}
+            key={tab.view}
             className="tab"
-            href={`#${tab.route}`}
-            aria-current={tab.route === route ? "page" : undefined}
+            href={`#${tab.view}`}
+            aria-current={tab.view === view ? "page" : undefined}
           >
             {tab.label}
           </a>

@@ -17,8 +17,8 @@ describe("starBalance", () => {
   });
 
   it("відновлені ділянки віднімають свою вартість", () => {
-    // клумба коштує 1, фонтан — 2
-    expect(starBalance(progress(["a", "b", "c"], ["flowerbed", "fountain"]))).toBe(0);
+    // табличка коштує 1, хвіртка — 2
+    expect(starBalance(progress(["a", "b", "c"], ["gate-sign", "gate-door"]))).toBe(0);
   });
 
   it("невідомі ділянки (наприклад, перейменовані) не враховуються", () => {
