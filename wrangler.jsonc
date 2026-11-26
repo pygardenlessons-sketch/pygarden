@@ -1,0 +1,8 @@
+{
+  // Налаштування Cloudflare: публікуємо статичний сайт з папки frontend
+  "name": "pygarden",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./frontend"
+  }
+}
