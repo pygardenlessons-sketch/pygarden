@@ -1,0 +1,4 @@
+# Залежності лише для розробки та тестів (у Docker-образ не потрапляють)
+-r requirements.txt
+pytest
+httpx

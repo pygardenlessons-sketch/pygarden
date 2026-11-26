@@ -61,6 +61,20 @@ uvicorn main:app --reload
 - http://127.0.0.1:8000 — сторінка «Привіт»
 - http://127.0.0.1:8000/docs — автоматична документація API
 
+## Тести
+
+Тести лежать у `backend/tests/` і пишуться на [pytest](https://docs.pytest.org/).
+
+```bash
+cd backend
+pip install -r requirements-dev.txt
+pytest -v
+```
+
+Ті самі тести автоматично запускає GitHub Actions при кожному `push` і на
+кожен pull request (`.github/workflows/tests.yml`). Результат видно на вкладці
+**Actions** у репозиторії та зеленою ✓ / червоним ✗ біля коміту.
+
 ## Запуск фронтенду локально
 
 Поки що це одна HTML-сторінка — достатньо відкрити `frontend/index.html` у браузері.

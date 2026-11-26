@@ -1,0 +1,30 @@
+name: Tests
+
+# Запускати при кожному push і на кожен pull request
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Завантажити код
+        uses: actions/checkout@v4
+
+      - name: Встановити Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"  # та сама версія, що й у Dockerfile
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+
+      - name: Встановити залежності
+        run: pip install -r requirements-dev.txt
+
+      - name: Запустити тести
+        run: pytest -v
