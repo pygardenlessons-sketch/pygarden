@@ -8,25 +8,28 @@
 
 - **Бекенд:** Python, FastAPI
 - **Фронтенд:** (згодом) React + TypeScript, Phaser, Pyodide
-- **Хостинг:** Cloudflare Pages (фронтенд)
+- **Хостинг:** Cloudflare Workers, static assets (фронтенд)
 
 ## Структура проєкту
 
 ```
 pygarden/
-├── backend/    # FastAPI-сервер (API)
-└── frontend/   # Сайт, який бачить гравець
+├── backend/        # FastAPI-сервер (API)
+├── frontend/       # Сайт, який бачить гравець
+└── wrangler.jsonc  # Налаштування деплою на Cloudflare
 ```
 
 ## Деплой
 
 Фронтенд розгортається автоматично: після кожного `git push` у гілку `main`
-Cloudflare Pages забирає вміст папки `frontend/` і публікує його на
-[pygarden.com](https://pygarden.com). Для кожної іншої гілки Cloudflare
-створює окремий preview-сайт, щоб перевірити зміни до злиття в `main`.
+Cloudflare Workers Builds запускає `npx wrangler deploy` і публікує вміст папки
+`frontend/` на [pygarden.com](https://pygarden.com). Налаштування деплою
+зберігаються в репозиторії у файлі `wrangler.jsonc` (configuration as code).
+Для інших гілок Cloudflare створює preview-версії, щоб перевірити зміни до
+злиття в `main`.
 
 ```
-git push → GitHub → Cloudflare Pages → pygarden.com
+git push → GitHub → Cloudflare Workers Builds → pygarden.com
 ```
 
 ## Запуск бекенду локально
