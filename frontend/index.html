@@ -1,36 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PyGarden</title>
-    <meta name="description" content="Безкоштовна гра, яка навчає Python з нуля через відновлення саду.">
-    <link rel="stylesheet" href="css/style.css">
-    <script type="module" src="js/app.js"></script>
-</head>
-<body>
-    <header class="top-bar">
-        <span class="logo">🌱 PyGarden</span>
-        <span id="stars" class="stars" aria-label="Зірочки">⭐ 0</span>
-    </header>
-
-    <main class="quest">
-        <nav id="quest-nav" class="quest-nav" aria-label="Квести"></nav>
-
-        <section class="quest-card">
-            <h1 id="quest-title"></h1>
-            <p id="quest-task" class="task"></p>
-
-            <pre class="code"><code id="quest-code"></code></pre>
-
-            <div class="actions">
-                <button id="check-button" type="button" class="button" disabled>Перевірити</button>
-                <button id="next-button" type="button" class="button button--secondary" hidden>Наступний квест →</button>
-                <span id="python-status" class="python-status">Завантажуємо Python…</span>
-            </div>
-
-            <div id="result" class="result" role="status" aria-live="polite" hidden></div>
-        </section>
-    </main>
-</body>
+    <meta name="description" content="Безкоштовна гра, яка навчає Python з нуля через відновлення саду." />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

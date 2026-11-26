@@ -1,8 +1,16 @@
 {
-  // Налаштування Cloudflare: публікуємо статичний сайт з папки frontend
+  // Налаштування Cloudflare: збираємо фронтенд і публікуємо готовий сайт
   "name": "pygarden",
   "compatibility_date": "2026-10-01",
+
+  // Перед деплоєм wrangler сам збирає React-застосунок (npm ci + vite build)
+  "build": {
+    "command": "npm ci && npm run build",
+    "cwd": "frontend"
+  },
+
+  // Публікуємо результат збірки, а не вихідний код
   "assets": {
-    "directory": "./frontend"
+    "directory": "./frontend/dist"
   }
 }

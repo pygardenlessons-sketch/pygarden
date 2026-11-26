@@ -2,7 +2,9 @@
 // Гравець бачить і пояснення, і справжній текст помилки, щоб поступово
 // вчитися читати повідомлення Python самостійно.
 
-export function explainError({ errorType, errorText }) {
+import type { RunFailure } from "./types.ts";
+
+export function explainError({ errorType, errorText }: Pick<RunFailure, "errorType" | "errorText">) {
   switch (errorType) {
     case "Timeout":
       return "Код виконується занадто довго. Схоже на нескінченний цикл — перевір умову циклу.";

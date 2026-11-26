@@ -4,7 +4,18 @@
 
 export const BLANK = "___";
 
-export const QUESTS = [
+export type Quest = {
+  id: string;
+  title: string;
+  task: string;
+  /** Код рівно з одним пропуском BLANK. */
+  code: string;
+  /** Що має вивести код після підстановки правильної відповіді. */
+  expected: string;
+  hint: string;
+};
+
+export const QUESTS: Quest[] = [
   {
     id: "print-hello",
     title: "Перше слово саду",

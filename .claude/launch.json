@@ -3,9 +3,14 @@
   "configurations": [
     {
       "name": "frontend",
-      "runtimeExecutable": "backend/.venv/Scripts/python.exe",
-      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "frontend"],
-      "port": 5500
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "frontend", "--", "--port", "5173", "--strictPort"],
+      "port": 5173
+    },
+    {
+      "name": "frontend-build",
+      "url": "http://localhost:4173",
+      "port": 4173
     }
   ]
 }
