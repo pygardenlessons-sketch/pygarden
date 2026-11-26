@@ -94,6 +94,8 @@ function openQuest(index) {
   answerInput.autocomplete = "off";
   answerInput.spellcheck = false;
   answerInput.autocapitalize = "off";
+  answerInput.setAttribute("autocorrect", "off"); // iPhone: без автовиправлення й підказок слів
+  answerInput.enterKeyHint = "go"; // кнопка Enter на мобільній клавіатурі
   answerInput.addEventListener("input", resizeInput);
   answerInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") checkAnswer();
@@ -137,6 +139,10 @@ function showResult(kind, parts) {
 
 // ---------- Перевірка ----------
 
+// iPhone і macOS автоматично замінюють " на «розумні» лапки “ ”, які Python не розуміє.
+// Гравець не винен у цьому, тож повертаємо звичайні лапки.
+const fixSmartQuotes = (text) => text.replace(/[“”„‟«»]/g, '"').replace(/[‘’‚‛]/g, "'");
+
 // Порівнюємо вивід без зайвих пробілів у кінці рядків
 const normalize = (text) =>
   text
@@ -148,7 +154,7 @@ const normalize = (text) =>
 async function checkAnswer() {
   const quest = QUESTS[current];
   if (els.check.disabled) return; // наприклад, Enter у вже пройденому квесті
-  const answer = answerInput.value.trim();
+  const answer = fixSmartQuotes(answerInput.value).trim();
 
   if (!answer) {
     showResult("error", [["p", "Спершу впиши щось у пропуск 🙂"]]);
