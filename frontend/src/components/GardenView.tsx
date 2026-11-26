@@ -40,7 +40,7 @@ export function GardenView({ zoneId }: { zoneId?: string }) {
   }
 
   return (
-    <main className="page">
+    <main className="page garden-page">
       <nav className="zone-tabs" aria-label="Зони саду">
         {CHAPTERS.map((c, i) =>
           isChapterOpen(c, progress.completed) ? (

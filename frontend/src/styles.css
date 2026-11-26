@@ -43,8 +43,28 @@ body {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: -4px -10px; /* підсвічування не зсуває шапку */
+  padding: 4px 10px;
+  border-radius: 999px;
   font-weight: 700;
   font-size: 1.2rem;
+  color: white;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.logo:hover {
+  background: rgba(0, 0, 0, 0.18); /* легке затемнення довкола */
+}
+
+/* Виділяти можна лише слово PyGarden, без іконки */
+.logo-icon {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .stars {
@@ -54,11 +74,16 @@ body {
   padding: 4px 12px;
   border-radius: 999px;
   white-space: nowrap;
+  user-select: none; /* лічильник — не текст для копіювання */
+  -webkit-user-select: none; /* Safari */
+  cursor: default;
 }
 
 .tabs {
   display: flex;
   gap: 4px;
+  user-select: none; /* вкладки — це кнопки, а не текст */
+  -webkit-user-select: none;
 }
 
 .tab {
@@ -104,6 +129,13 @@ body {
 }
 
 /* ---------- Сад ---------- */
+
+/* Сад — ігровий екран, а не текст: нічого не виділяється при кліках і дотиках */
+.garden-page {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* iPhone: без меню «Копіювати» при довгому дотику */
+}
 
 .garden-map {
   position: relative;

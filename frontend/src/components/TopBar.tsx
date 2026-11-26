@@ -11,9 +11,13 @@ export function TopBar({ view }: { view: View }) {
 
   return (
     <header className="top-bar">
-      <span className="logo">
-        🌱 <span className="logo-text">PyGarden</span>
-      </span>
+      {/* Логотип веде на головну — у сад */}
+      <a className="logo" href="#garden" aria-label="PyGarden — на головну">
+        <span className="logo-icon" aria-hidden="true">
+          🌱
+        </span>
+        <span className="logo-text">PyGarden</span>
+      </a>
       <nav className="tabs" aria-label="Розділи">
         {TABS.map((tab) => (
           <a
