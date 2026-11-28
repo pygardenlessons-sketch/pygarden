@@ -1,7 +1,7 @@
 // Екран саду: кожен розділ курсу має свою зону з зарослими ділянками,
 // які гравець відновлює за зірочки.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CHAPTERS, currentChapter, findChapter, isChapterOpen } from "../data/course.ts";
 import type { Chapter, GardenSpot } from "../data/types.ts";
 import { starBalance, unlockSpot, useProgress, type Progress } from "../game/progress.ts";
@@ -25,6 +25,14 @@ export function GardenView({ zoneId }: { zoneId?: string }) {
             c.zone.spots.some((spot) => !progress.unlocked.includes(spot.id)),
         ) ?? currentChapter(progress.completed));
   const { zone } = chapter;
+  const tabsRef = useRef<HTMLElement>(null);
+
+  // Прокрутити перемикач зон так, щоб поточна зона була видна
+  useEffect(() => {
+    tabsRef.current
+      ?.querySelector('[aria-current="page"]')
+      ?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [chapter.id]);
 
   // Фіксуємо обрану зону в адресі (#garden → #garden/print), щоб сад не перескакував
   // на іншу зону, щойно гравець відновить останню ділянку поточної
@@ -41,7 +49,7 @@ export function GardenView({ zoneId }: { zoneId?: string }) {
 
   return (
     <main className="page garden-page">
-      <nav className="zone-tabs" aria-label="Зони саду">
+      <nav className="zone-tabs" aria-label="Зони саду" ref={tabsRef}>
         {CHAPTERS.map((c, i) =>
           isChapterOpen(c, progress.completed) ? (
             <a

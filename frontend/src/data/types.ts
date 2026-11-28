@@ -46,7 +46,47 @@ export type PredictQuest = {
   hints: Hints;
 };
 
-export type Quest = FillBlankQuest | PredictQuest;
+/**
+ * Один набір даних для перевірки квесту «Напиши сам»:
+ * код гравця виконується як  given + код гравця + after,
+ * і його вивід має збігтися з expected.
+ */
+export type WriteCase = {
+  /** Код, що виконується ДО коду гравця (наприклад, задає змінні). Гравець бачить його як «Дано». */
+  given?: string;
+  /** Код, що виконується ПІСЛЯ коду гравця (наприклад, викликає його функцію). */
+  after?: string;
+  expected: string;
+};
+
+/** Вимога до коду гравця, наприклад «використай цикл». */
+export type Requirement = {
+  /** Код має містити хоча б один із цих фрагментів. */
+  anyOf: string[];
+  /** Що сказати гравцеві, якщо вимогу не виконано. */
+  message: string;
+};
+
+/**
+ * Квест «Напиши сам»: гравець пише код у редакторі. Код перевіряється на
+ * кількох наборах даних (cases), тож просто вивести потрібну відповідь не вийде.
+ */
+export type WriteQuest = {
+  kind: "write";
+  id: string;
+  title: string;
+  task: string;
+  /** Що вже написано в редакторі на початку (може бути порожнім). */
+  starter: string;
+  /** Набори даних для перевірки; перший гравець бачить у завданні. */
+  cases: [WriteCase, ...WriteCase[]];
+  requires?: Requirement[];
+  /** Зразок розв'язку (тест перевіряє, що він проходить усі cases). */
+  solution: string;
+  hints: Hints;
+};
+
+export type Quest = FillBlankQuest | PredictQuest | WriteQuest;
 export type Step = Tip | Quest;
 
 export type GardenSpot = {
@@ -63,7 +103,19 @@ export type Zone = {
   name: string;
   emoji: string;
   /** Вигляд карти: доріжки, паркан тощо (див. styles.css, .garden-map--…). */
-  layout: "gate" | "flowerbeds" | "vegetables" | "gazebo";
+  layout:
+    | "gate"
+    | "flowerbeds"
+    | "vegetables"
+    | "gazebo"
+    | "greenhouse"
+    | "pond"
+    | "pantry"
+    | "workshop"
+    | "herbs"
+    | "apiary"
+    | "orchard"
+    | "lawn";
   spots: GardenSpot[];
 };
 

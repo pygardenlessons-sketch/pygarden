@@ -83,6 +83,36 @@ export function QuestResult({
         </div>
       );
 
+    case "requirement":
+      return (
+        <div className="result result--error" role="status">
+          <p>{feedback.message}</p>
+          {hintLine}
+        </div>
+      );
+
+    case "wrong-case":
+      return (
+        <div className="result result--error" role="status">
+          <p>
+            {feedback.caseNumber === 1
+              ? "Код спрацював без помилок, але вивід не той, що потрібно."
+              : "З першими даними все працює, але гра перевірила ще й інші — і там вивід не той."}
+          </p>
+          {feedback.caseNumber > 1 && feedback.given && (
+            <>
+              <p className="label">Перевіряли з:</p>
+              <pre className="output">{feedback.given}</pre>
+            </>
+          )}
+          <p className="label">Очікували:</p>
+          <pre className="output">{feedback.expected}</pre>
+          <p className="label">Вийшло:</p>
+          <pre className="output">{feedback.got || "(нічого не виведено)"}</pre>
+          {hintLine}
+        </div>
+      );
+
     case "wrong-prediction":
       return (
         <div className="result result--error" role="status">

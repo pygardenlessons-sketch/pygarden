@@ -247,13 +247,159 @@ body {
   background: repeating-linear-gradient(90deg, #c8955f 0 8%, #b9864f 8% 9%);
 }
 
+/* Зона «Теплиця»: скляні рами */
+.garden-map--greenhouse {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.35) 2px, transparent 2px) 0 0 / 25% 100%,
+    linear-gradient(0deg, rgba(255, 255, 255, 0.35) 2px, transparent 2px) 0 0 / 100% 50%,
+    linear-gradient(180deg, #cfe9e4, #a9d8b8);
+}
+
+.garden-map--greenhouse::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 8%;
+  transform: translateY(-50%);
+  background: #c9b48a;
+}
+
+/* Зона «Ставок»: вода посередині */
+.garden-map--pond::before {
+  left: 50%;
+  top: 50%;
+  width: 56%;
+  height: 66%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 35%, #9fd3ef, #5aa7d6 70%);
+  box-shadow: 0 0 0 6px #c9b48a;
+}
+
+/* Зона «Комора»: дерев'яна підлога й полиці */
+.garden-map--pantry {
+  background: repeating-linear-gradient(0deg, #d9b98a 0 9%, #cfae7e 9% 10%);
+}
+
+.garden-map--pantry::before,
+.garden-map--pantry::after {
+  left: 4%;
+  right: 4%;
+  height: 5%;
+  background: #8a5d34;
+  border-radius: 3px;
+}
+
+.garden-map--pantry::before {
+  top: 44%;
+}
+
+.garden-map--pantry::after {
+  top: 86%;
+}
+
+/* Зона «Майстерня»: кам'яна підлога й верстак */
+.garden-map--workshop {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 2px, transparent 2px) 0 0 / 12.5% 16.6%,
+    linear-gradient(0deg, rgba(0, 0, 0, 0.08) 2px, transparent 2px) 0 0 / 12.5% 16.6%,
+    #cfcac0;
+}
+
+.garden-map--workshop::before {
+  left: 30%;
+  right: 30%;
+  top: 40%;
+  height: 24%;
+  background: #a87444;
+  border-radius: 6px;
+  box-shadow: 0 6px 0 #7c5330;
+}
+
+/* Зона «Сад трав»: шахівниця маленьких грядок */
+.garden-map--herbs {
+  background:
+    repeating-conic-gradient(#7fb85c 0 25%, #8fc46a 0 50%) 0 0 / 20% 25%;
+}
+
+.garden-map--herbs::before {
+  left: 50%;
+  top: 50%;
+  width: 30%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #e3cf9f;
+}
+
+/* Зона «Пасіка»: луг із квітами */
+.garden-map--apiary {
+  background:
+    radial-gradient(circle, #f2d16b 0 3px, transparent 4px) 0 0 / 12% 16%,
+    radial-gradient(circle, #e8a0b8 0 3px, transparent 4px) 6% 8% / 12% 16%,
+    #92c46c;
+}
+
+.garden-map--apiary::before {
+  left: 50%;
+  top: 40%;
+  width: 30%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #e3cf9f;
+}
+
+/* Зона «Фруктовий сад»: ряди крон дерев */
+.garden-map--orchard {
+  background:
+    radial-gradient(circle, #5e9a42 0 22%, transparent 23%) 0 0 / 20% 25%,
+    #86bd62;
+}
+
+.garden-map--orchard::before {
+  left: 0;
+  right: 0;
+  top: 56%;
+  height: 10%;
+  transform: translateY(-50%);
+  background: #e3cf9f;
+}
+
+/* Зона «Будиночок садівника»: галявина з доріжкою до дому */
+.garden-map--lawn::before {
+  left: 50%;
+  top: 30%;
+  bottom: 0;
+  width: 14%;
+  transform: translateX(-50%);
+  background: #e3cf9f;
+}
+
+.garden-map--lawn::after {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30%;
+  background: linear-gradient(180deg, #bfe3f5, rgba(191, 227, 245, 0));
+}
+
 /* ---------- Перемикач зон ---------- */
 
+/* Зон багато — один рядок із горизонтальною прокруткою */
 .zone-tabs {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
+  padding: 2px 2px 6px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+}
+
+.zone-tabs > * {
+  flex-shrink: 0;
+  scroll-snap-align: center;
 }
 
 .zone-tab {
@@ -619,6 +765,66 @@ body {
   opacity: 1;
   background: var(--green-light);
   border-color: var(--green);
+}
+
+/* ---------- Напиши сам ---------- */
+
+.code-label {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.code--given {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.code-editor {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font: 1rem/1.6 var(--mono);
+  color: var(--code-text);
+  background: var(--code-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  resize: none;
+  overflow-y: auto;
+  tab-size: 4;
+  caret-color: #ffe9a8;
+}
+
+.code-editor:focus {
+  outline: none;
+  border-color: #ffe9a8;
+}
+
+.code-editor:disabled {
+  color: #a8e6b8;
+  -webkit-text-fill-color: #a8e6b8;
+  opacity: 1;
+}
+
+.code-editor::placeholder {
+  color: rgba(232, 241, 234, 0.4);
+}
+
+.editor-note {
+  margin: 4px 0 16px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* На телефонах немає клавіш Tab і Ctrl — підказка про них зайва */
+@media (pointer: coarse) {
+  .editor-note {
+    visibility: hidden;
+    height: 0;
+    margin: 0 0 12px;
+  }
 }
 
 /* ---------- Квест ---------- */

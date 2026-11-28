@@ -4,6 +4,14 @@ import { chapterPrint } from "./chapters/01-print.ts";
 import { chapterVariables } from "./chapters/02-variables.ts";
 import { chapterNumbers } from "./chapters/03-numbers.ts";
 import { chapterStrings } from "./chapters/04-strings.ts";
+import { chapterConditions } from "./chapters/05-conditions.ts";
+import { chapterLoops } from "./chapters/06-loops.ts";
+import { chapterLists } from "./chapters/07-lists.ts";
+import { chapterFunctions } from "./chapters/08-functions.ts";
+import { chapterDicts } from "./chapters/09-dicts.ts";
+import { chapterErrors } from "./chapters/10-errors.ts";
+import { chapterModules } from "./chapters/11-modules.ts";
+import { chapterProject } from "./chapters/12-project.ts";
 import type { Chapter, GardenSpot, Quest, Step } from "./types.ts";
 
 export const CHAPTERS: Chapter[] = [
@@ -11,16 +19,18 @@ export const CHAPTERS: Chapter[] = [
   chapterVariables,
   chapterNumbers,
   chapterStrings,
+  chapterConditions,
+  chapterLoops,
+  chapterLists,
+  chapterFunctions,
+  chapterDicts,
+  chapterErrors,
+  chapterModules,
+  chapterProject,
 ];
 
 /** Наступні розділи за планом — показуються в списку як «Незабаром». */
-export const UPCOMING: { title: string; zone: string; emoji: string }[] = [
-  { title: "Умови", zone: "Теплиця", emoji: "🌡️" },
-  { title: "Цикли", zone: "Грядки", emoji: "🌱" },
-  { title: "Списки", zone: "Комора", emoji: "🧺" },
-  { title: "Функції", zone: "Майстерня", emoji: "🔨" },
-  { title: "Словники", zone: "Каталог рослин", emoji: "📖" },
-];
+export const UPCOMING: { title: string; zone: string; emoji: string }[] = [];
 
 export const isQuest = (step: Step): step is Quest => step.kind !== "tip";
 

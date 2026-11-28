@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
-import type { FillBlankQuest } from "../data/types.ts";
+import type { FillBlankQuest, WriteQuest } from "../data/types.ts";
 import {
   buildCode,
+  buildWriteCode,
+  checkRequirements,
   cleanAnswer,
   fixSmartQuotes,
   judgeFillBlank,
   judgePrediction,
+  judgeWrite,
   normalizeOutput,
 } from "./check-answer.ts";
 
@@ -103,5 +106,81 @@ describe("judgePrediction", () => {
     if (verdict.kind !== "wrong-prediction") throw new Error("очікували wrong-prediction");
     expect(verdict.message).toContain("рядок 2");
     expect(verdict.message).not.toContain("прокидається");
+  });
+});
+
+describe("«Напиши сам»", () => {
+  const writeQuest: WriteQuest = {
+    kind: "write",
+    id: "write-test",
+    title: "Тест",
+    task: "",
+    starter: "",
+    cases: [
+      { given: "temp = 34", expected: "Спека" },
+      { given: "temp = 10", expected: "Норма" },
+    ],
+    requires: [{ anyOf: ["if"], message: "Потрібен if" }],
+    solution: "",
+    hints: ["", ""],
+  };
+
+  it("код збирається з «Дано», коду гравця й «Після»", () => {
+    expect(buildWriteCode({ given: "a = 1", after: "print(a)", expected: "" }, "a = a + 1")).toBe(
+      "a = 1\na = a + 1\nprint(a)",
+    );
+    expect(buildWriteCode({ expected: "" }, 'print("x")')).toBe('print("x")');
+  });
+
+  it("помічає невиконану вимогу ще до запуску", () => {
+    expect(checkRequirements(writeQuest, 'print("Спека")')).toEqual({
+      kind: "requirement",
+      message: "Потрібен if",
+    });
+    expect(checkRequirements(writeQuest, "if temp > 30: ...")).toBeNull();
+  });
+
+  it("успіх, лише якщо пройдено всі набори даних", () => {
+    expect(judgeWrite(writeQuest, [ok("Спека\n"), ok("Норма\n")]).kind).toBe("success");
+  });
+
+  it("каже, на якому наборі даних не вийшло", () => {
+    expect(judgeWrite(writeQuest, [ok("Спека"), ok("Спека")])).toEqual({
+      kind: "wrong-case",
+      caseNumber: 2,
+      given: "temp = 10",
+      expected: "Норма",
+      got: "Спека",
+    });
+  });
+
+  it("номер рядка помилки — у коді гравця, без рядків «Дано»", () => {
+    const verdict = judgeWrite(writeQuest, [
+      { ok: false, output: "", errorType: "NameError", errorText: "NameError: name 'x' is not defined", line: 3 },
+    ]);
+    expect(verdict).toMatchObject({ kind: "error", line: 2 });
+  });
+});
+
+describe("номери рядків у помилках «Напиши сам»", () => {
+  it("зсуває номер і в тексті помилки, і в позначці рядка", () => {
+    const quest: WriteQuest = {
+      kind: "write", id: "x", title: "", task: "", starter: "", solution: "", hints: ["", ""],
+      cases: [{ given: "temps = [1]", expected: "" }],
+    };
+    const verdict = judgeWrite(quest, [
+      {
+        ok: false,
+        output: "",
+        errorType: "IndentationError",
+        errorText: "IndentationError: expected an indented block after 'if' statement on line 3",
+        line: 4,
+      },
+    ]);
+    expect(verdict).toMatchObject({
+      kind: "error",
+      line: 3,
+      errorText: "IndentationError: expected an indented block after 'if' statement on line 2",
+    });
   });
 });

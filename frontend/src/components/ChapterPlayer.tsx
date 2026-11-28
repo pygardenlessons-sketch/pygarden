@@ -7,6 +7,7 @@ import { useProgress } from "../game/progress.ts";
 import { FillBlankCard } from "./FillBlankCard.tsx";
 import { PredictCard } from "./PredictCard.tsx";
 import { TipCard } from "./TipCard.tsx";
+import { WriteCard } from "./WriteCard.tsx";
 
 /** З якого кроку почати: перший непройдений квест (або порада перед ним). */
 function firstStepIndex(steps: Step[], completed: string[]): number {
@@ -96,11 +97,13 @@ export function ChapterPlayer({ chapter }: { chapter: Chapter }) {
             ),
           };
           // key: при зміні кроку картка створюється заново з чистим станом
-          return step.kind === "fill-blank" ? (
-            <FillBlankCard key={step.id} quest={step} {...props} />
-          ) : (
-            <PredictCard key={step.id} quest={step} {...props} />
-          );
+          if (step.kind === "fill-blank") {
+            return <FillBlankCard key={step.id} quest={step} {...props} />;
+          }
+          if (step.kind === "predict") {
+            return <PredictCard key={step.id} quest={step} {...props} />;
+          }
+          return <WriteCard key={step.id} quest={step} {...props} />;
         })()}
 
       {chapterDone && isLast && (

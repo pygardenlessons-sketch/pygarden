@@ -6,7 +6,7 @@
 
 import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
-import { BLANK, normalizeOutput } from "../game/check-answer.ts";
+import { BLANK, buildWriteCode, checkRequirements, normalizeOutput } from "../game/check-answer.ts";
 import { CHAPTERS } from "./course.ts";
 
 function findPython(): string | null {
@@ -58,6 +58,26 @@ describe.skipIf(!python)("вміст курсу в справжньому Python
       }
     },
   );
+
+  const writeQuests = steps.filter((s) => s.kind === "write");
+
+  it.each(writeQuests)("квест $id: зразок розв'язку проходить усі набори даних", (quest) => {
+    for (const testCase of quest.cases) {
+      const result = runPython(buildWriteCode(testCase, quest.solution));
+      expect(result.error).toBe("");
+      expect(result.output).toBe(normalizeOutput(testCase.expected));
+    }
+  });
+
+  it.each(writeQuests)("квест $id: зразок розв'язку виконує вимоги", (quest) => {
+    expect(checkRequirements(quest, quest.solution)).toBeNull();
+  });
+
+  it.each(writeQuests)("квест $id: стартовий код сам по собі не проходить", (quest) => {
+    const first = quest.cases[0];
+    const result = runPython(buildWriteCode(first, quest.starter));
+    expect(result.ok && result.output === normalizeOutput(first.expected)).toBe(false);
+  });
 
   it.each(steps.filter((s) => s.kind === "tip"))("порада $id: приклад працює", (tip) => {
     const result = runPython(tip.example);
