@@ -63,7 +63,7 @@ export type Zone = {
   name: string;
   emoji: string;
   /** Вигляд карти: доріжки, паркан тощо (див. styles.css, .garden-map--…). */
-  layout: "gate" | "flowerbeds";
+  layout: "gate" | "flowerbeds" | "vegetables" | "gazebo";
   spots: GardenSpot[];
 };
 

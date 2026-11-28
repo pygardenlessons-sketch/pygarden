@@ -205,6 +205,48 @@ body {
   background: #e3cf9f;
 }
 
+/* Зона «Город»: доріжка посередині й ряди грядок з обох боків */
+.garden-map--vegetables {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 10%,
+      #8b6a4a 10% 13%,
+      transparent 13% 28%
+    ),
+    #86bd62;
+}
+
+.garden-map--vegetables::before {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 14%;
+  transform: translateX(-50%);
+  background: #e3cf9f;
+}
+
+/* Зона «Альтанка»: дерев'яний настил у центрі й доріжка до нього */
+.garden-map--gazebo::before {
+  left: 50%;
+  top: 48%;
+  bottom: 0;
+  width: 14%;
+  transform: translateX(-50%);
+  background: #e3cf9f;
+}
+
+.garden-map--gazebo::after {
+  left: 50%;
+  top: 48%;
+  width: 40%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 4px solid #8a5d34;
+  background: repeating-linear-gradient(90deg, #c8955f 0 8%, #b9864f 8% 9%);
+}
+
 /* ---------- Перемикач зон ---------- */
 
 .zone-tabs {

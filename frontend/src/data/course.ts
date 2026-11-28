@@ -2,14 +2,19 @@
 
 import { chapterPrint } from "./chapters/01-print.ts";
 import { chapterVariables } from "./chapters/02-variables.ts";
+import { chapterNumbers } from "./chapters/03-numbers.ts";
+import { chapterStrings } from "./chapters/04-strings.ts";
 import type { Chapter, GardenSpot, Quest, Step } from "./types.ts";
 
-export const CHAPTERS: Chapter[] = [chapterPrint, chapterVariables];
+export const CHAPTERS: Chapter[] = [
+  chapterPrint,
+  chapterVariables,
+  chapterNumbers,
+  chapterStrings,
+];
 
 /** Наступні розділи за планом — показуються в списку як «Незабаром». */
 export const UPCOMING: { title: string; zone: string; emoji: string }[] = [
-  { title: "Числа й арифметика", zone: "Город", emoji: "🥕" },
-  { title: "Рядки", zone: "Альтанка", emoji: "🏡" },
   { title: "Умови", zone: "Теплиця", emoji: "🌡️" },
   { title: "Цикли", zone: "Грядки", emoji: "🌱" },
   { title: "Списки", zone: "Комора", emoji: "🧺" },
